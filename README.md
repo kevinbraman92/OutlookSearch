@@ -3,6 +3,8 @@ A Python program that will search an Microsoft Outlook email box and return an o
 
 The program is set up to search either the inbox, sent folder, or deleted folder. The program assumes you have Microsoft Outlook set up on your computer. 
 
+It will search emails up to the last 45 days.
+
 To use, simply put the values you want to search for in Column A of the input file, under 'SearchID'.
 
 Example:

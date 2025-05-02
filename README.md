@@ -1,5 +1,7 @@
 # OutlookSearch
-A Python program that will search an outlook email box and return an output file marking the matches.
+A Python program that will search an Microsoft Outlook email box and return an output file marking the matches.
+
+The program is set up to search either the inbox, sent folder, or deleted folder. The program assumes you have Microsoft Outlook set up on your computer. 
 
 To use, simply put the values you want to search for in Column A of the input file, under 'SearchID'.
 

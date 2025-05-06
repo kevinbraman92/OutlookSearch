@@ -1,12 +1,14 @@
 import pandas as pd
+import helperFunctions
 import win32com.client
 import os
 import time
 from datetime import datetime, timedelta
+from openpyxl import load_workbook
 
 def outlookSearch():
     selections = [1, 2, 3]
-    choice = 6
+    choice = 6 
     print('Please select a mail box to search from the options below:')
     print('1. Inbox')
     print('2. Sent')
@@ -16,12 +18,12 @@ def outlookSearch():
                 selection = int(input('\nPlease make a selection: '))
                 if selection in selections:
                     if selection == 1:
-                        print('Searching inbox...')
+                        print('\nInbox selected.')
                     if selection == 2:
-                        print('Searching sent emails..')
+                        print('\nSent Emails selected.')
                         choice = 5
                     if selection == 3:
-                        print('Searching deleted emails...')
+                        print('\nDeleted Emails selected.')
                         choice = 3
                     break
                 else:
@@ -29,13 +31,13 @@ def outlookSearch():
         except ValueError:
             print('Command not recognized. Please enter a number from the options above.')
 
-
+    DaysToSearch = int(input("\nPlease select how many days into the past you would like to search: "))
     dateFrame = pd.read_excel('input.xlsx', engine='openpyxl')
     dateFrame['Email Match'] = pd.NA
     outlook = win32com.client.Dispatch('Outlook.Application').GetNamespace('MAPI')
     emailBox = outlook.GetDefaultFolder(choice)
     messages = emailBox.Items
-    cutoffDate = (datetime.now() - timedelta(days=45)).strftime('%m/%d/%Y %H:%M %p')
+    cutoffDate = (datetime.now() - timedelta(days=DaysToSearch )).strftime('%m/%d/%Y %H:%M %p')
     filter = f"[SentOn] >= '{cutoffDate}'"
     messages = emailBox.Items.Restrict(filter)
     messages.Sort("[SentOn]", True)
@@ -58,7 +60,14 @@ def outlookSearch():
     dateFrame.to_excel('output.xlsx', index=False)
     endTime = time.time()
     executionTime = endTime - startTime
-    print(f"Done! Results saved to {os.path.abspath('output.xlsx')}, taking {executionTime:.2f} seconds")
+    print(f"Done! Results saved to {os.path.abspath('output.xlsx')}, taking {executionTime:.2f} seconds.")
+
+    workbook = load_workbook('output.xlsx')
+    worksheet = workbook.active
+    for worksheet in workbook.worksheets:
+        helperFunctions.auto_adjust_columns(worksheet)
+
+    workbook.save('output.xlsx')
 
 def main():
     outlookSearch()
